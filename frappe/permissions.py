@@ -218,10 +218,6 @@ def has_user_permission(doc, user=None):
 		# no user permission rules specified for this doctype
 		return True
 
-	# user can create own role permissions, so nothing applies
-	if get_role_permissions('User Permission', user=user).get('write'):
-		return True
-
 	apply_strict_user_permissions = frappe.get_system_settings('apply_strict_user_permissions')
 
 	doctype = doc.get('doctype')
@@ -291,6 +287,10 @@ def has_user_permission(doc, user=None):
 	for d in doc.get_all_children():
 		if not check_user_permission_on_link_fields(d):
 			return False
+	
+	# user can create own role permissions, so nothing applies
+	if get_role_permissions('User Permission', user=user).get('write'):
+		return True
 
 	return True
 
